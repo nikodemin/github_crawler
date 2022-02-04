@@ -4,7 +4,7 @@ import org.http4s.Uri
 import pureconfig.ConfigReader
 import pureconfig.generic.semiauto.deriveReader
 
-case class GithubConfig(token: String, maxRetryCount: Int = 3, basePath: Uri)
+case class GithubConfig(token: String, maxRetryCount: Int = 3, basePath: Uri, pageSize: Int = 30)
 
 object GithubConfig extends ConfigReaders {
   implicit val reader: ConfigReader[GithubConfig] = deriveReader[GithubConfig]

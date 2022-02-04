@@ -18,11 +18,16 @@ import org.http4s.{AuthScheme, Credentials, Header, Request, Response}
 import org.typelevel.ci.CIStringSyntax
 
 trait GithubClient[F[_]] {
-  def getOrganizationRepos(orgName: String): F[Either[GetOrganizationReposError, List[Repository]]]
+
+  def getOrganizationRepos(
+    orgName: String,
+    pagination: Pagination
+  ): F[Either[GetOrganizationReposError, List[Repository]]]
 
   def getRepoContributors(
     ownerLogin: String,
-    repoName: String
+    repoName: String,
+    pagination: Pagination
   ): F[Either[GetRepoContributorsError, List[RepositoryContributor]]]
 }
 
@@ -35,18 +40,34 @@ object GithubClient {
       with Http4sCodecs
       with Http4sClientDsl[F] {
     val bearerToken: Authorization = Authorization(Credentials.Token(AuthScheme.Bearer, config.token))
-    val accept: Header.Raw         = Header.Raw(ci"Accept", "application/vnd.github.v3+json")
+    val accept: Header.Raw = Header.Raw(ci"Accept", "application/vnd.github.v3+json")
 
-    override def getOrganizationRepos(orgName: String): F[Either[GetOrganizationReposError, List[Repository]]] = {
-      val request = GET(config.basePath / "orgs" / orgName / "repos", bearerToken, accept)
+    override def getOrganizationRepos(
+      orgName: String,
+      pagination: Pagination
+    ): F[Either[GetOrganizationReposError, List[Repository]]] = {
+      val request = GET(
+        config.basePath / "orgs" / orgName / "repos"
+          withQueryParam ("page", pagination.pageNumber)
+          withQueryParam ("per_page", pagination.pageSize),
+        bearerToken,
+        accept
+      )
       runWithErrorHandling(request)(resp => GetOrganizationReposError(orgName, resp.status.code))
     }
 
     override def getRepoContributors(
       ownerLogin: String,
-      repoName: String
+      repoName: String,
+      pagination: Pagination
     ): F[Either[GetRepoContributorsError, List[RepositoryContributor]]] = {
-      val request = GET(config.basePath / "repos" / ownerLogin / repoName / "contributors", bearerToken, accept)
+      val request = GET(
+        config.basePath / "repos" / ownerLogin / repoName / "contributors"
+          withQueryParam ("page", pagination.pageNumber)
+          withQueryParam ("per_page", pagination.pageSize),
+        bearerToken,
+        accept
+      )
       runWithErrorHandling(request)(resp => GetRepoContributorsError(ownerLogin, repoName, resp.status.code))
     }
 
