@@ -20,14 +20,14 @@ trait GithubClient[F[_]] {
 
 object GithubClient {
 
-  private class GithubClientLive[F[_] : Concurrent](client: Client[F], config: GithubConfig)(implicit
-                                                                                             repoDecoder: Decoder[Repository],
-                                                                                             repoContributorDecoder: Decoder[RepositoryContributor]
+  private class GithubClientLive[F[_]: Concurrent](client: Client[F], config: GithubConfig)(implicit
+    repoDecoder: Decoder[Repository],
+    repoContributorDecoder: Decoder[RepositoryContributor]
   ) extends GithubClient[F]
-    with Http4sCodecs
-    with Http4sClientDsl[F] {
+      with Http4sCodecs
+      with Http4sClientDsl[F] {
     val bearerToken: Authorization = Authorization(Credentials.Token(AuthScheme.Bearer, config.token))
-    val accept: Header.Raw = Header.Raw(ci"Accept", "application/vnd.github.v3+json")
+    val accept: Header.Raw         = Header.Raw(ci"Accept", "application/vnd.github.v3+json")
 
     override def getOrganizationRepos(orgName: String): F[List[Repository]] = {
       val request = GET(config.basePath / s"/orgs/$orgName/repos", bearerToken, accept)
@@ -40,8 +40,8 @@ object GithubClient {
     }
   }
 
-  def live[F[_] : Concurrent](client: Client[F], githubConfig: GithubConfig)(implicit
-                                                                             repoDecoder: Decoder[Repository],
-                                                                             repoContributorDecoder: Decoder[RepositoryContributor]
+  def live[F[_]: Concurrent](client: Client[F], githubConfig: GithubConfig)(implicit
+    repoDecoder: Decoder[Repository],
+    repoContributorDecoder: Decoder[RepositoryContributor]
   ): GithubClient[F] = new GithubClientLive[F](client, githubConfig)
 }

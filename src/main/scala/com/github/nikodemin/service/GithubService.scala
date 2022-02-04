@@ -8,6 +8,7 @@ trait GithubService[F[_]] {
 }
 
 object GithubService {
+
   private class GithubServiceLive[F[_]]() extends GithubService[F] {
     override def getContributorsByCompany(companyName: String): F[Either[BusinessError, List[ContributorInfo]]] = ???
   }

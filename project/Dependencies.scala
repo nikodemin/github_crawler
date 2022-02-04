@@ -14,22 +14,22 @@ object Dependencies {
   object Versions {
     val catsEffect = "3.3.5"
 
-    val tapir = "0.20.0-M8"
+    val tapir  = "0.20.0-M8"
     val http4s = "0.23.9"
 
-    val circe = "0.14.1"
+    val circe      = "0.14.1"
     val enumeratum = "1.7.0"
-    val chimney = "0.6.1"
-    val newtype = "0.4.4"
+    val chimney    = "0.6.1"
+    val newtype    = "0.4.4"
     val pureconfig = "0.17.1"
 
-    val scalatest = "3.2.11"
-    val scalamock = "5.2.0"
-    val testcontainersScala = "0.40.0"
+    val scalatest                       = "3.2.11"
+    val scalamock                       = "5.2.0"
+    val testcontainersScala             = "0.40.0"
     val `cats-effect-testing-scalatest` = "1.4.0"
 
-    val slf4j = "1.7.35"
-    val logback = "1.2.10"
+    val slf4j    = "1.7.35"
+    val logback  = "1.2.10"
     val log4cats = "2.2.0"
   }
 
@@ -62,7 +62,7 @@ object Dependencies {
   }
 
   val scalamock: Module = new Module {
-    override val group: String = "org.scalamock"
+    override val group: String                 = "org.scalamock"
     override val artifacts: List[sbt.ModuleID] = List("scalamock").map(withVersion(Versions.scalamock))
   }
 
@@ -74,22 +74,22 @@ object Dependencies {
   }
 
   val logback: Module = new Module {
-    override val group: String = "ch.qos.logback"
+    override val group: String                 = "ch.qos.logback"
     override val artifacts: List[sbt.ModuleID] = List("logback-classic").map(withJavaVersion(Versions.logback))
   }
 
   val slf4: Module = new Module {
-    override val group: String = "org.slf4j"
+    override val group: String                 = "org.slf4j"
     override val artifacts: List[sbt.ModuleID] = List("slf4j-api").map(withJavaVersion(Versions.slf4j))
   }
 
   val scalaland: Module = new Module {
-    override val group: String = "io.scalaland"
+    override val group: String                 = "io.scalaland"
     override val artifacts: List[sbt.ModuleID] = List("chimney").map(withVersion(Versions.chimney))
   }
 
   val beachape: Module = new Module {
-    override val group: String = "com.beachape"
+    override val group: String                 = "com.beachape"
     override val artifacts: List[sbt.ModuleID] = List("enumeratum").map(withVersion(Versions.enumeratum))
   }
 
@@ -101,12 +101,12 @@ object Dependencies {
   }
 
   val estatico: Module = new Module {
-    override val group: String = "io.estatico"
+    override val group: String                 = "io.estatico"
     override val artifacts: List[sbt.ModuleID] = List("newtype").map(withVersion(Versions.newtype))
   }
 
   val pureconfig: Module = new Module {
-    override val group: String = "com.github.pureconfig"
+    override val group: String                 = "com.github.pureconfig"
     override val artifacts: List[sbt.ModuleID] = List("pureconfig").map(withVersion(Versions.pureconfig))
   }
 
