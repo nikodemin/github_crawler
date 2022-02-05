@@ -6,7 +6,7 @@ This app is using github V3 api to find contributors names and their contributio
 
 ## Note
 
-Large organizations may contain a log of information, so it may take some time to process all data. This app uses in
+Large organizations may contain a lot of information, so it may take some time to process all data. This app uses in
 memory cache, so if you are getting request timed out errors or something similar, you could retry http call to this app
 until it will succeed.
 
@@ -18,7 +18,8 @@ You could either use:
 * run in your favorite IDE (Intellij IDEA or Eclipse for example)
 
 afterwards trigger endpoint:
-http://localhost:8080/org/{org_name}/contributors
+GET http://localhost:8080/org/{org_name}/contributors
+until it succeeds
 
 ## How to run tests
 
