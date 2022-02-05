@@ -18,7 +18,7 @@ You could either use:
 * run in your favorite IDE (Intellij IDEA or Eclipse for example)
 
 afterwards trigger endpoint:
-GET http://localhost:8080/org/{org_name}/contributors
+`GET http://localhost:8080/org/{org_name}/contributors`
 until it succeeds
 
 ## How to run tests
