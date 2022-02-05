@@ -37,7 +37,9 @@ object Main extends IOApp {
   def getRoutes(githubService: GithubService[IO]): HttpRoutes[IO] =
     Http4sServerInterpreter[IO].toRoutes(
       getContributorsByCompany.serverLogic[IO](
-        githubService.getContributorsByCompany(_).compile.toList map (_.sortBy(_.contributions).asRight)
+        githubService.getContributorsByCompany(_).compile.toList map (_.sortWith(
+          _.contributions > _.contributions
+        ).asRight)
       )
     )
 

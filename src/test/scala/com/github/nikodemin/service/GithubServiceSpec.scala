@@ -13,17 +13,21 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.typelevel.log4cats.Logger
 
+import scala.concurrent.duration.{Duration, DurationInt}
 import scala.util.Random
 
 class GithubServiceSpec extends AnyWordSpec with Matchers with MockFactory {
-  val pageSize                   = 7
-  val contributorNum             = 30
+  val pageSize = 7
+  val contributorNum = 30
   val contributors: List[String] = List.fill(contributorNum)(Random.nextString(7))
+  val cacheExpiration = 30.seconds
 
-  val githubClient: GithubClient[Id]   = mock[GithubClient[Id]]
-  val cache: ContributorsCache[Id]     = mock[ContributorsCache[Id]]
-  implicit val log: Logger[Id]         = new IdLoggerMock()
-  val githubConfig: GithubConfig       = GithubConfig("", 3, Uri.unsafeFromString("http://localhost"), pageSize)
+  val githubClient: GithubClient[Id] = mock[GithubClient[Id]]
+  val cache: ContributorsCache[Id] = mock[ContributorsCache[Id]]
+  implicit val log: Logger[Id] = new IdLoggerMock()
+
+  val githubConfig: GithubConfig =
+    GithubConfig("", 3, Uri.unsafeFromString("http://localhost"), pageSize, cacheExpiration)
   val toPagination: Long => Pagination = num => Pagination(num, pageSize)
   val githubService: GithubService[Id] = GithubService.live[Id](githubClient, cache, githubConfig)
 
@@ -103,11 +107,15 @@ class GithubServiceSpec extends AnyWordSpec with Matchers with MockFactory {
               repository.name,
               toPagination(pageIndex + 1)
             ).returns(contributors)
-            (cache.saveRepoContributors(_: String, _: String, _: Pagination)(_: List[RepositoryContributor])).expects(
+            (cache.saveRepoContributors(_: String, _: String, _: Pagination)(
+              _: List[RepositoryContributor],
+              _: Duration
+            )).expects(
               repository.owner.login,
               repository.name,
               toPagination(pageIndex + 1),
-              contributors
+              contributors,
+              cacheExpiration
             ).returns(())
         }
     }

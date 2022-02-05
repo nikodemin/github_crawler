@@ -43,7 +43,7 @@ object GithubService {
             (contributorsCache.getRepoContributors _).tupled(key).flatMap {
               case Some(value) => value.pure[F]
               case None        => ((githubClient.getRepoContributors _).tupled(key)).map { contributors =>
-                  (contributorsCache.saveRepoContributors _).tupled(key)(contributors)
+                    (contributorsCache.saveRepoContributors _).tupled(key)(contributors, githubConfig.cacheExpiration)
                   contributors
                 }
             }
